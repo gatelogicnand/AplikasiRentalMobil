@@ -3,8 +3,8 @@
 Aplikasi berbasis web untuk manajemen penyewaan mobil yang dikembangkan menggunakan framework Laravel. Proyek ini dibangun sebagai pemenuhan Tugas Akhir Semester (UAS) mata kuliah Web Lanjut, yang mengimplementasikan fitur lengkap mulai dari autentikasi, manajemen data (CRUD), hingga ekspor laporan.
 
 ## 👨‍🎓 Identitas Mahasiswa
-* **Nama:** [TULIS_NAMA_LENGKAP_ANDA_DI_SINI]
-* **NIM:** [TULIS_NIM_ANDA_DI_SINI]
+* **Nama:** [Angga Firnanda]
+* **NIM:** [230170149]
 * **Mata Kuliah:** Pemrograman Web Lanjut
 
 ---
