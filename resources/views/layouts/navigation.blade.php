@@ -113,6 +113,7 @@
             @endif
 
             @if(Auth::user()->role === 'user')
+            <!-- 4. Riwayat Transaksi -->
             <x-responsive-nav-link :href="route('rentals.riwayat')" :active="request()->routeIs('rentals.riwayat')">
                 {{ __('Riwayat Transaksi') }}
             </x-responsive-nav-link>
