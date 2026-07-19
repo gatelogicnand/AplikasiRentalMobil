@@ -17,7 +17,7 @@ Untuk menguji fitur pemisahan hak akses (Role-Based Access Control), silakan gun
 * Password: adminrental123
 
 **Akun Pelanggan (User):**
-* Email: customerental@test.com
+* Email: customerrental@test.com
 * Password: customerrental123
 
 -----
