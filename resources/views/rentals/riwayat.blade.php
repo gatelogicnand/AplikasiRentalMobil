@@ -8,6 +8,9 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
+            <!-- 1. SCRIPT WAJIB MIDTRANS -->
+            <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+
             <!-- Notifikasi Sukses -->
             @if(session('success'))
                 <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
@@ -26,6 +29,8 @@
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Sewa</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Biaya</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status Pesanan</th>
+                                    <!-- Tambahan Header Aksi -->
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -44,7 +49,7 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @if($rental->status === 'menunggu')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Menunggu Konfirmasi</span>
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Menunggu Pembayaran</span>
                                             @elseif($rental->status === 'berjalan')
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Sedang Dirental</span>
                                             @elseif($rental->status === 'selesai')
@@ -53,10 +58,43 @@
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Dibatalkan</span>
                                             @endif
                                         </td>
+                                        
+                                        <!-- 2. TAMBAHAN KOLOM AKSI (TOMBOL BAYAR) -->
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            @if($rental->status === 'menunggu' && $rental->snap_token)
+                                                <button id="pay-button-{{ $rental->id }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-4 rounded shadow focus:outline-none focus:shadow-outline">
+                                                    Bayar Sekarang
+                                                </button>
+
+                                                <!-- Script Pemanggil Pop-up per Transaksi -->
+                                                <script type="text/javascript">
+                                                    document.getElementById('pay-button-{{ $rental->id }}').onclick = function(){
+                                                        window.snap.pay('{{ $rental->snap_token }}', {
+                                                            onSuccess: function(result){
+                                                                alert("Pembayaran berhasil! Menunggu verifikasi sistem.");
+                                                                window.location.reload();
+                                                            },
+                                                            onPending: function(result){
+                                                                alert("Menunggu pembayaran Anda!");
+                                                            },
+                                                            onError: function(result){
+                                                                alert("Pembayaran gagal atau kadaluarsa!");
+                                                            },
+                                                            onClose: function(){
+                                                                alert('Anda menutup pop-up tanpa menyelesaikan pembayaran.');
+                                                            }
+                                                        });
+                                                    };
+                                                </script>
+                                            @else
+                                                <span class="text-gray-400 text-sm">-</span>
+                                            @endif
+                                        </td>
+                                        
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                        <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                                             Anda belum memiliki riwayat transaksi penyewaan.
                                         </td>
                                     </tr>

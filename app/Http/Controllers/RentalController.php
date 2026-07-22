@@ -7,20 +7,17 @@ use App\Models\Rental;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+// Tambahkan library Midtrans di sini
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class RentalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(Mobil $mobil)
     {
         if ($mobil->status !== 'tersedia') {
@@ -29,9 +26,6 @@ class RentalController extends Controller
         return view('rentals.create', compact('mobil'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request, Mobil $mobil)
     {
         $request->validate([
@@ -39,16 +33,14 @@ class RentalController extends Controller
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
         ]);
 
-        // Hitung total hari
         $start = Carbon::parse($request->tanggal_mulai);
         $end = Carbon::parse($request->tanggal_selesai);
-        $hari = $start->diffInDays($end) + 1; // +1 agar dihitung per hari kalender (bukan 24 jam)
+        $hari = $start->diffInDays($end) + 1; 
         
-        // Hitung total harga otomatis
         $totalHarga = $hari * $mobil->harga_sewa_per_hari;
 
-        // Simpan ke database dengan status menunggu
-        Rental::create([
+        // 1. Simpan ke database tanpa snap_token terlebih dahulu
+        $rental = Rental::create([
             'user_id' => Auth::id(),
             'mobil_id' => $mobil->id,
             'tanggal_mulai' => $request->tanggal_mulai,
@@ -57,37 +49,60 @@ class RentalController extends Controller
             'status' => 'menunggu', 
         ]);
 
-        // Arahkan ke halaman riwayat setelah sukses (halaman riwayat akan kita buat di tahap selanjutnya)
-        return redirect()->route('rentals.riwayat')->with('success', 'Berhasil! Menunggu konfirmasi Admin.');
+        // 2. Konfigurasi Midtrans
+        Config::$serverKey = env('MIDTRANS_SERVER_KEY');
+        Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false); // Ambil dari .env
+        Config::$isSanitized = true;
+        Config::$is3ds = true;
+
+        // 3. Siapkan detail transaksi untuk Midtrans
+        $params = [
+            'transaction_details' => [
+                'order_id' => 'RENT-' . $rental->id . '-' . time(), // ID unik agar Midtrans tidak menolak
+                'gross_amount' => $totalHarga,
+            ],
+            'customer_details' => [
+                'first_name' => Auth::user()->name,
+                'email' => Auth::user()->email,
+            ],
+            'item_details' => [
+                [
+                    'id' => $mobil->id,
+                    'price' => $mobil->harga_sewa_per_hari,
+                    'quantity' => $hari,
+                    'name' => 'Rental ' . $mobil->merek . ' ' . $mobil->tipe,
+                ]
+            ]
+        ];
+
+        // 4. Minta Snap Token ke Midtrans lalu simpan ke database
+        try {
+            $snapToken = Snap::getSnapToken($params);
+            
+            $rental->snap_token = $snapToken;
+            $rental->save();
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal terhubung ke Midtrans: ' . $e->getMessage());
+        }
+
+        return redirect()->route('rentals.riwayat')->with('success', 'Transaksi berhasil! Silakan selesaikan pembayaran.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Rental $rental)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Rental $rental)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Rental $rental)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Rental $rental)
     {
         //
@@ -95,9 +110,8 @@ class RentalController extends Controller
 
     public function riwayatUser()
     {
-        // Hanya mengambil data rental milik user ini, diurutkan dari yang terbaru
         $rentals = Rental::where('user_id', Auth::id())
-                         ->with('mobil') // Eager loading untuk optimasi query
+                         ->with('mobil')
                          ->latest()
                          ->get();
                          
@@ -106,14 +120,12 @@ class RentalController extends Controller
 
     public function indexAdmin()
     {
-        // Mengambil semua data rental beserta relasi user dan mobil, urut dari terbaru
         $rentals = Rental::with(['user', 'mobil'])->latest()->get();
         return view('admin.rentals.index', compact('rentals'));
     }
 
     public function updateStatus(Request $request, Rental $rental)
     {
-        // 1. Ubah validasi 'batal' menjadi 'dibatalkan'
         $request->validate([
             'status' => 'required|in:menunggu,berjalan,selesai,dibatalkan'
         ]);
@@ -123,8 +135,6 @@ class RentalController extends Controller
 
         if ($request->status === 'berjalan') {
             $rental->mobil->update(['status' => 'dirental']);
-            
-        // 2. Ubah juga kondisi elseif-nya
         } elseif ($request->status === 'selesai' || $request->status === 'dibatalkan') {
             $rental->mobil->update(['status' => 'tersedia']);
         }

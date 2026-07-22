@@ -10,7 +10,12 @@ class Mobil extends Model
     use HasFactory;
 
     protected $fillable = [
-        'merek', 'tipe', 'nomor_polisi', 'harga_sewa_per_hari', 'status', 'foto'
+        'merek',
+        'tipe',
+        'nomor_polisi',
+        'harga_sewa_per_hari',
+        'status',
+        'foto'
     ];
 
     public function rentals()
