@@ -59,10 +59,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('mobils/export-pdf', [MobilController::class, 'exportPdf'])->name('mobils.export_pdf');
         Route::resource('mobils', MobilController::class);
+
+        Route::put('/rentals/{rental}', [App\Http\Controllers\RentalController::class, 'update'])->name('rentals.update');
+        Route::delete('/rentals/{rental}', [App\Http\Controllers\RentalController::class, 'destroy'])->name('rentals.destroy');
         
         // Route Transaksi Admin (Duplikat sebelumnya sudah dihapus dan disatukan di sini)
         Route::get('rentals', [RentalController::class, 'indexAdmin'])->name('rentals.index');
-        Route::patch('rentals/{rental}/status', [RentalController::class, 'updateStatus'])->name('rentals.updateStatus');
+        Route::patch('rentals/{rental}/status', [RentalController::class, 'updateStatus'])->name('rentals.update-status');
     });
 
 });

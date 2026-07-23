@@ -29,17 +29,37 @@
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Sewa</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Biaya</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status Pesanan</th>
-                                    <!-- Tambahan Header Aksi -->
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @forelse ($rentals as $rental)
                                     <tr>
+                                        <!-- BAGIAN KOLOM MOBIL YANG DIPERBARUI DENGAN GAMBAR -->
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm font-medium text-gray-900">{{ $rental->mobil->merek }} {{ $rental->mobil->tipe }}</div>
-                                            <div class="text-sm text-gray-500">{{ $rental->mobil->nomor_polisi }}</div>
+                                            <div class="flex items-center">
+                                                <!-- Thumbnail Mobil -->
+                                                <div class="flex-shrink-0 h-16 w-24 mr-4">
+                                                    @if($rental->mobil->foto)
+                                                        <img class="h-full w-full rounded-lg object-cover shadow-sm border border-gray-200" 
+                                                             src="{{ asset('storage/' . $rental->mobil->foto) }}" 
+                                                             alt="{{ $rental->mobil->merek }}">
+                                                    @else
+                                                        <!-- Fallback jika mobil belum memiliki foto -->
+                                                        <div class="h-full w-full rounded-lg bg-gray-100 flex items-center justify-center border border-gray-200 shadow-sm">
+                                                            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                        
+                                                <!-- Detail Teks Mobil -->
+                                                <div>
+                                                    <div class="text-sm font-bold text-gray-900">{{ $rental->mobil->merek }} {{ $rental->mobil->tipe }}</div>
+                                                    <div class="text-sm text-gray-500">{{ $rental->mobil->nomor_polisi }}</div>
+                                                </div>
+                                            </div>
                                         </td>
+
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($rental->tanggal_mulai)->format('d M Y') }}</div>
                                             <div class="text-sm text-gray-500">s/d {{ \Carbon\Carbon::parse($rental->tanggal_selesai)->format('d M Y') }}</div>
@@ -62,7 +82,7 @@
                                         <!-- 2. TAMBAHAN KOLOM AKSI (TOMBOL BAYAR) -->
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             @if($rental->status === 'menunggu' && $rental->snap_token)
-                                                <button id="pay-button-{{ $rental->id }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-4 rounded shadow focus:outline-none focus:shadow-outline">
+                                                <button id="pay-button-{{ $rental->id }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-4 rounded shadow focus:outline-none focus:shadow-outline transition-colors">
                                                     Bayar Sekarang
                                                 </button>
 
@@ -87,14 +107,15 @@
                                                     };
                                                 </script>
                                             @else
-                                                <span class="text-gray-400 text-sm">-</span>
+                                                <span class="text-gray-400 text-sm font-medium">-</span>
                                             @endif
                                         </td>
                                         
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                        <td colspan="5" class="px-6 py-12 whitespace-nowrap text-sm text-gray-500 text-center">
+                                            <svg class="mx-auto h-12 w-12 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                                             Anda belum memiliki riwayat transaksi penyewaan.
                                         </td>
                                     </tr>

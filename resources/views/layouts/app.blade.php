@@ -5,7 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <!-- Mengubah default title agar sesuai dengan aplikasi Anda -->
+        <title>{{ config('app.name', 'Rental Mobil') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -14,13 +15,17 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+    <body class="font-sans antialiased text-gray-800">
+        <!-- Mengubah background menjadi slate-50 untuk kesan fresh/bersih -->
+        <div class="min-h-screen bg-slate-50">
+            
+            <!-- Navbar akan dirender dari file terpisah -->
             @include('layouts.navigation')
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="bg-white shadow">
+                <!-- Memperhalus shadow dan menambahkan border tipis -->
+                <header class="bg-white shadow-sm border-b border-gray-100">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
