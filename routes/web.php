@@ -7,9 +7,13 @@ use App\Http\Controllers\RentalController;
 use App\Http\Controllers\KatalogController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use App\Models\Mobil;
 
 Route::get('/', function () {
-    return view('welcome');
+    // Mengambil 6 data mobil terbaru untuk ditampilkan di halaman depan
+    $mobils = Mobil::latest()->take(6)->get(); 
+    
+    return view('welcome', compact('mobils'));
 });
 
 Route::middleware('auth')->group(function () {

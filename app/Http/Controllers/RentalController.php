@@ -7,7 +7,6 @@ use App\Models\Rental;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-// Tambahkan library Midtrans di sini
 use Midtrans\Config;
 use Midtrans\Snap;
 
@@ -20,6 +19,7 @@ class RentalController extends Controller
 
     public function create(Mobil $mobil)
     {
+        // Cegah user masuk ke form pemesanan jika mobil tidak tersedia
         if ($mobil->status !== 'tersedia') {
             return redirect()->route('mobils.katalog')->with('error', 'Mohon maaf, mobil ini sedang tidak tersedia.');
         }
@@ -51,14 +51,14 @@ class RentalController extends Controller
 
         // 2. Konfigurasi Midtrans
         Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false); // Ambil dari .env
+        Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false);
         Config::$isSanitized = true;
         Config::$is3ds = true;
 
         // 3. Siapkan detail transaksi untuk Midtrans
         $params = [
             'transaction_details' => [
-                'order_id' => 'RENT-' . $rental->id . '-' . time(), // ID unik agar Midtrans tidak menolak
+                'order_id' => 'RENT-' . $rental->id . '-' . time(), 
                 'gross_amount' => $totalHarga,
             ],
             'customer_details' => [
@@ -126,16 +126,23 @@ class RentalController extends Controller
 
     public function updateStatus(Request $request, Rental $rental)
     {
+        // 1. Validasi input status
         $request->validate([
             'status' => 'required|in:menunggu,berjalan,selesai,dibatalkan'
         ]);
 
-        $rental->status = $request->status;
-        $rental->save();
+        // 2. Update status transaksinya
+        $rental->update([
+            'status' => $request->status
+        ]);
 
+        // 3. SINKRONISASI STATUS MOBIL (Pendekatan 1)
         if ($request->status === 'berjalan') {
+            // Jika rental berjalan, mobil jadi 'dirental'
             $rental->mobil->update(['status' => 'dirental']);
-        } elseif ($request->status === 'selesai' || $request->status === 'dibatalkan') {
+            
+        } elseif (in_array($request->status, ['selesai', 'dibatalkan'])) {
+            // Jika rental selesai atau dibatalkan, mobil kembali 'tersedia'
             $rental->mobil->update(['status' => 'tersedia']);
         }
 
