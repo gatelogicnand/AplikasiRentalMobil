@@ -104,7 +104,7 @@ Berikut adalah dokumentasi tangkapan layar yang membuktikan bahwa seluruh fitur 
 > Pengujian layout yang adaptif dan fleksibel pada berbagai ukuran layar perangkat.
 *   **Tampilan Desktop:**
     
-    ![Tampilan Desktop](path/to/screenshot-desktop.png)
+    ![Tampilan Desktop](Picture/Screenshoots/bbb.png)
 
 *   **Tampilan Mobile:**
     

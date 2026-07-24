@@ -128,8 +128,7 @@
 
                             <!-- Logika Autentikasi: Jika belum login, arahkan ke login. Jika sudah, arahkan ke form pesanan -->
                             @auth
-                                <!-- Sesuaikan 'reservasi.create' dengan nama route pemesanan Anda -->
-                                <a href="{{ route('reservasi.create', $mobil->id) }}" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition">
+                                <a href="{{ route('rentals.create', $mobil->id) }}" class="block w-full text-center py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-semibold transition-colors duration-200">
                                     Pesan Sekarang
                                 </a>
                             @else
