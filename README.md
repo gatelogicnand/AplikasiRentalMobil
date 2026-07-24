@@ -62,69 +62,80 @@ Berikut adalah dokumentasi tangkapan layar yang membuktikan bahwa seluruh fitur 
 ### 1. Halaman Login
 > Menampilkan antarmuka autentikasi pengguna dengan desain minimalis dan modern.
 
-![Halaman Login](path/to/screenshot-login.png)
+![Halaman Login](Picture/Screenshoots_Desktop/ss_desktop_10.png)
 
-### 2. Verifikasi Email
+### 2. Halaman Registrasi
+> Menampilkan antarmuka autentikasi pengguna dengan desain minimalis dan modern.
+
+![Halaman Registrasi](Picture/Screenshoots_Desktop/ss_desktop_11.png)
+
+### 3. Verifikasi Email
 > Fitur konfirmasi keamanan akun melalui pengiriman tautan verifikasi ke email pengguna (`MustVerifyEmail`).
 
-![Verifikasi Email](path/to/screenshot-verify.png)
+![Pesan Verifikasi Email](Picture/Screenshoots_Desktop/ss_desktop_15.png)
 
-### 3. Dashboard
+![Verifikasi Email](Picture/Screenshoots_Desktop/ss_desktop_16.png)
+
+### 4. Dashboard
 *   **Dashboard Admin:**
     > Menampilkan ringkasan statistik operasional, total armada, dan pemantauan cepat aktivitas rental.
     
-    ![Dashboard Admin](path/to/screenshot-admin-dashboard.png)
+    ![Dashboard Admin](Picture/Screenshoots_Desktop/ss_desktop_6.png)
 
 *   **Dashboard User:**
     > Menampilkan informasi ringkas akun dan status pemesanan aktif pengguna.
     
-    ![Dashboard User](path/to/screenshot-user-dashboard.png)
+    ![Dashboard User](Picture/Screenshoots_Desktop/ss_desktop_13.png)
 
-### 4. CRUD Inventaris Mobil (Admin)
+### 5. CRUD Inventaris Mobil (Admin)
 > Fitur pengelolaan data kendaraan lengkap mencakup Tambah (Create), Lihat (Read), Ubah (Update) dengan *preview* foto sejajar, dan Hapus (Delete).
 
-![CRUD Inventaris Mobil](path/to/screenshot-crud-mobil.png)
+![CRUD Inventaris Mobil](Picture/Screenshoots_Desktop/ss_desktop_5.png)
 
-### 5. REST API & Hasil Pengujian Postman
+### 6. REST API & Hasil Pengujian Postman
 > Endpoint API yang mengembalikan data format JSON untuk integrasi layanan luar, lengkap dengan dokumentasi hasil pengujian *Response Code 200 OK* pada Postman.
 
-![Pengujian API Postman](path/to/screenshot-postman.png)
+![Berhasil Membuat Pesanan Baru](Picture/Screenshoots_Desktop/ss_desktop_19.png)
 
-### 6. Pemisahan Hak Akses (Admin & User)
+![Payment Method Via Midtrans](Picture/Screenshoots_Desktop/ss_desktop_20.png)
+
+![Membayar Pesanan Baru Melalui Postman](Picture/Screenshoots_Desktop/ss_desktop_21.png)
+
+![Pesanan Berhasil Dibayar](Picture/Screenshoots_Desktop/ss_desktop_22.png)
+
+### 7. Pemisahan Hak Akses (Admin & User)
 > Perbandingan tata letak navigasi: **Sidebar** eksklusif untuk Admin dan **Topbar** bersih untuk User.
 *   **Tampilan Navigasi Admin (Sidebar):**
     
-    ![Navigasi Admin](path/to/screenshot-admin-nav.png)
+    ![Navigasi Admin](Picture/Screenshoots_Desktop/ss_desktop_6.png)
 
 *   **Tampilan Navigasi User (Topbar):**
     
-    ![Navigasi User](path/to/screenshot-user-nav.png)
+    ![Navigasi User](Picture/Screenshoots_Mobile/ss_mobile_4.png)
 
-### 7. Tampilan Responsif (Desktop & Mobile)
+### 8. Tampilan Responsif (Desktop & Mobile)
 > Pengujian layout yang adaptif dan fleksibel pada berbagai ukuran layar perangkat.
 *   **Tampilan Desktop:**
     
-    ![Tampilan Desktop](Picture/Screenshoots/bbb.png)
+    ![Tampilan Desktop](Picture/Screenshoots_Desktop/ss_desktop_23.png)
 
 *   **Tampilan Mobile:**
     
-    ![Tampilan Mobile](path/to/screenshot-mobile.png)
+    ![Tampilan Mobile](Picture/Screenshoots_Mobile/ss_mobile_1.png)
 
-### 8. Hasil Export PDF
+### 9. Hasil Export PDF
 > Laporan transaksi dan rekapitulasi data rental yang berhasil diekspor ke dalam dokumen berformat PDF yang rapi.
 
-![Export Laporan PDF](path/to/screenshot-pdf-export.png)
+![Export Laporan PDF](Picture/Screenshoots_Desktop/ss_desktop_3.png)
 
 ---
 
-## 🚀 Panduan Instalasi & Menjalankan Proyek
-
-## Cara Instalasi dan Menjalankan Aplikasi
+## 🚀 Panduan Instalasi & Menjalankan Proyek 
 
 1. Clone repository:
    ```
-   git clone <url-repository-ini>
-   cd <nama-folder-project>
+   git clone <https://github.com/gatelogicnand/AplikasiRentalMobil.git>
+   cd <AplikasiRentalMobil>
    ```
 
 2. Install dependency PHP:
@@ -143,7 +154,7 @@ Berikut adalah dokumentasi tangkapan layar yang membuktikan bahwa seluruh fitur 
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
    DB_PORT=3306
-   DB_DATABASE=reservasi_restoran
+   DB_DATABASE=db_rentalmobil
    DB_USERNAME=root
    DB_PASSWORD=
    ```
